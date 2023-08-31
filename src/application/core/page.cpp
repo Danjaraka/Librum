@@ -1,4 +1,5 @@
 #include "page.hpp"
+#include <mupdf/fitz/geometry.h>
 #include <QDebug>
 #include <cmath>
 #include "mupdf/classes.h"
@@ -161,6 +162,23 @@ QPointF Page::scalePointToCurrentZoom(const QPointF& point, float oldZoom)
     return QPointF(fzPoint.x, fzPoint.y);
 }
 
+QRectF Page::scaleRectToCurrentZoom(const QRectF& rect, float oldZoom)
+{
+    mupdf::FzQuad fzQuad = qRectFToFzQuad(rect);
+    auto oldMatrix = mupdf::FzMatrix();
+    oldMatrix.a = oldZoom;
+    oldMatrix.d = oldZoom;
+
+    // Normalize point
+    auto invMatrix = oldMatrix.fz_invert_matrix();
+    fzQuad = fzQuad.fz_transform_quad(invMatrix);
+
+    // Transform point to the current matrix
+    fzQuad = fzQuad.fz_transform_quad(m_matrix);
+
+    return fzQuadToQRectF(fzQuad);
+}
+
 void Page::setZoom(float newZoom)
 {
     if(m_matrix.a == newZoom && m_matrix.d == newZoom)
@@ -242,13 +260,6 @@ QPair<QPointF, QPointF> Page::getPositionsForLineSelection(QPointF point)
                                    QPointF(fzEnd.x, fzEnd.y));
 }
 
-QRectF Page::fzQuadToQRectF(const mupdf::FzQuad& rect)
-{
-    float width = rect.ur.x - rect.ul.x;
-    float height = rect.ll.y - rect.ul.y;
-    return QRectF(rect.ul.x, rect.ul.y, width, height);
-}
-
 bool Page::pointIsAboveText(const QPoint& point)
 {
     mupdf::FzPoint fzPoint(point.x(), point.y());
@@ -300,6 +311,23 @@ QString Page::getTextFromSelection(const QPointF& start, const QPointF& end)
 
     auto text = m_textPage->fz_copy_selection(fzStart, fzEnd, 1);
     return QString::fromStdString(text);
+}
+
+QRectF Page::fzQuadToQRectF(const mupdf::FzQuad& rect)
+{
+    float width = rect.ur.x - rect.ul.x;
+    float height = rect.ll.y - rect.ul.y;
+    return QRectF(rect.ul.x, rect.ul.y, width, height);
+}
+
+mupdf::FzQuad Page::qRectFToFzQuad(const QRectF& rect)
+{
+    auto ul = fz_point(rect.topLeft().x(), rect.topLeft().y());
+    auto ur = fz_point(rect.topRight().x(), rect.topRight().y());
+    auto ll = fz_point(rect.bottomLeft().x(), rect.bottomLeft().y());
+    auto lr = fz_point(rect.bottomRight().x(), rect.bottomRight().y());
+
+    return mupdf::fz_make_quad(ul.x, ul.y, ur.x, ur.y, ll.x, ll.y, lr.x, lr.y);
 }
 
 }  // namespace application::core

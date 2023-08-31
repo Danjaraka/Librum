@@ -14,6 +14,7 @@ add_library(presentation
                     modules/CppElements/document_item.hpp
                     modules/CppElements/page_item.cpp
                     modules/CppElements/page_item.hpp
+                    modules/CppElements/highlight.hpp
 )
 
 target_compile_definitions(presentation PRIVATE PRESENTATION_LIBRARY)

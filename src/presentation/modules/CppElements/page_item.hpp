@@ -4,6 +4,7 @@
 #include <QTimer>
 #include <memory>
 #include "document_item.hpp"
+#include "highlight.hpp"
 #include "page.hpp"
 #include "presentation_export.hpp"
 
@@ -60,6 +61,11 @@ private:
     void drawSelection();
     void generateSelection();
     void paintSelectionOnPage(QPainter& painter);
+    void paintHighlightsOnPage(QPainter& painter);
+    bool mouseAboveSelection(QPointF mouse);
+
+    void createHighlightFromCurrentSelection();
+    void removeConflictingHighlights(Highlight& highlight);
 
     void resetCursorToDefault();
     void setCorrectCursor(int x, int y);
@@ -68,6 +74,7 @@ private:
     DocumentItem* m_document = nullptr;
     std::unique_ptr<application::core::Page> m_page;
     int m_currentPage = 0;
+    QList<Highlight> m_highlights;
     bool m_firstTimeColorInverted = true;
     bool m_startedMousePressOnLink = false;
     QPointF m_selectionStart;

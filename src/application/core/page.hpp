@@ -28,6 +28,7 @@ public:
 
     QImage renderPage();
     QPointF scalePointToCurrentZoom(const QPointF& point, float oldZoom);
+    QRectF scaleRectToCurrentZoom(const QRectF& point, float oldZoom);
     void setInvertColor(bool newInvertColor);
     void generateSelectionRects(QPointF start, QPointF end);
     QPair<QPointF, QPointF> getPositionsForWordSelection(QPointF begin,
@@ -46,6 +47,7 @@ private:
     mupdf::FzPixmap getEmptyPixmap() const;
     QImage imageFromPixmap(mupdf::FzPixmap pixmap);
     QRectF fzQuadToQRectF(const mupdf::FzQuad& rect);
+    mupdf::FzQuad qRectFToFzQuad(const QRectF& rect);
 
     const mupdf::FzDocument* m_document;
     std::unique_ptr<mupdf::FzPage> m_page;
