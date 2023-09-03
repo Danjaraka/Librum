@@ -220,6 +220,9 @@ void PageItem::mouseReleaseEvent(QMouseEvent* event)
 
 void PageItem::mouseMoveEvent(QMouseEvent* event)
 {
+    if(event->buttons() == Qt::RightButton)
+        return;
+
     int mouseX = event->position().x();
     int mouseY = event->position().y();
 
@@ -323,16 +326,8 @@ QRectF shrinkRectangle(const QRectF& newRect, const QRectF& existingRect)
 
 void PageItem::removeConflictingHighlights(Highlight& highlight)
 {
-    // When creating new highlights, they might conflict with existing ones, the
-    // three conflict cases are:
-    // - The new highlight "eats" an existing one, meaning that it fully
-    //   surrounds it
-    //      -> In this case just "take over" the other highlight
-    // - The new highlight is fully contained in an existing one
-    //      -> In this case do nothing, do not add the new highlight
-    // - The new highlight intersects with an existing one from either the left
-    //   or the right side
-    //      -> In this case shrink the existing one and add the new highlight
+    bool existingHighlightRemoved = false;
+
     for(int i = 0; i < m_highlights.size(); ++i)
     {
         auto& existingHighlight = m_highlights[i];
@@ -343,27 +338,14 @@ void PageItem::removeConflictingHighlights(Highlight& highlight)
 
             for(int k = 0; k < existingHighlight.rects.size(); ++k)
             {
-                // New rect fully "eats" old rect
                 auto& existingRect = existingHighlight.rects[k];
-                if(rect.contains(existingRect))
-                {
-                    existingHighlight.rects.removeAt(k);
-                    --k;
-                }
-
-                // New rect is fully contained in old rect
-                else if(existingRect.contains(rect))
-                {
-                    highlight.rects.removeAt(u);
-                    --u;
-                }
 
                 // New rect intersects with old rect
-                else if(rect.intersects(existingRect))
+                if(rect.intersects(existingRect))
                 {
                     // Make sure that the rects are on the same line. With some
-                    // fonts, lines above eachother will intersect, but we only
-                    // want to shrink the rect if it's on the same line.
+                    // fonts, lines above eachother will intersect, but its only
+                    // an intersect when they are on the same line.
                     auto shorterRect = rect.height() <= existingRect.height()
                                            ? rect
                                            : existingRect;
@@ -371,19 +353,23 @@ void PageItem::removeConflictingHighlights(Highlight& highlight)
                     bool onSameLine = intersectH == shorterRect.height();
 
                     if(onSameLine)
-                        existingRect = shrinkRectangle(rect, existingRect);
+                    {
+                        m_highlights.removeAt(i);
+                        --i;
+                        existingHighlightRemoved = true;
+                        break;
+                    }
                 }
             }
-        }
 
-        if(existingHighlight.rects.isEmpty())
-        {
-
-            m_highlights.removeAt(i);
-            --i;
+            if(existingHighlightRemoved)
+            {
+                existingHighlightRemoved = false;
+                break;
+            }
         }
     }
-}  // namespace cpp_elements
+}
 
 void PageItem::drawSelection()
 {
