@@ -80,6 +80,8 @@ void UserService::deleteUser()
         utility::AutomaticLoginHelper::clearAutomaticLoginData();
     }
 
+    deleteAllLocalUserData();
+
     m_userStorageGateway->deleteUser(m_authenticationToken);
 }
 
@@ -123,12 +125,12 @@ void UserService::setEmail(const QString& newEmail)
     m_userStorageGateway->changeEmail(m_authenticationToken, m_user.getEmail());
 }
 
-long UserService::getUsedBookStorage() const
+qint64 UserService::getUsedBookStorage() const
 {
     return m_user.getUsedBookStorage();
 }
 
-long UserService::getBookStorageLimit() const
+qint64 UserService::getBookStorageLimit() const
 {
     return m_user.getBookStorageLimit();
 }
@@ -172,6 +174,11 @@ void UserService::deleteProfilePicture()
 void UserService::changePassword(const QString& newPassword)
 {
     m_userStorageGateway->changePassword(m_authenticationToken, newPassword);
+}
+
+void UserService::forgotPassword(const QString& email)
+{
+    m_userStorageGateway->forgotPassword(email);
 }
 
 QString UserService::saveProfilePictureToFile(QByteArray& data)
@@ -387,6 +394,18 @@ void UserService::updateProfilePicture(const domain::entities::User& user)
     {
         m_userStorageGateway->getProfilePicture(m_authenticationToken);
     }
+}
+
+void UserService::deleteAllLocalUserData()
+{
+    QDir profileDir(getUserProfileDir());
+    if(!profileDir.exists())
+    {
+        qWarning() << "Can't delete user profile directory, no such directory.";
+        return;
+    }
+
+    profileDir.removeRecursively();
 }
 
 bool UserService::userIsLoggedIn()

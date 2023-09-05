@@ -50,8 +50,8 @@ Page
             Layout.leftMargin: -root.horizontalPadding
             Layout.rightMargin: -root.rightPadding
             visible: baseRoot.notifyAboutUpdates 
-                     && AppInformation.newestVersion !== "-"
-                     & AppInformation.currentVersion !== AppInformation.newestVersion 
+                     && AppInfoController.newestVersion !== ""
+                     && AppInfoController.currentVersion !== AppInfoController.newestVersion
             
             Rectangle
             {
@@ -62,13 +62,23 @@ Page
             
             Label
             {
-                id: loginText
+                id: updateBannerText
                 anchors.centerIn: parent
-                text: "A new version is available! Make sure to update."
+                text: 'A new version is available! <a href="update" style="color: #FFFFFF; text-decoration: underline;">Update Now</a>'
+                onLinkActivated: baseRoot.loadSettingsUpdatesPage()
+                textFormat: Text.RichText
                 color: Style.colorBannerText
                 font.bold: true
                 font.pointSize: 12
-                
+
+                // Switch to the proper cursor when hovering above the link
+                MouseArea
+                {
+                    id: mouseArea
+                    acceptedButtons: Qt.NoButton    // Don't eat the mouse clicks
+                    anchors.fill: parent
+                    cursorShape: updateBannerText.hoveredLink != "" ? Qt.PointingHandCursor : Qt.ArrowCursor
+                }
             }
             
             MButton

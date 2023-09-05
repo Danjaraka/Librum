@@ -7,6 +7,7 @@
 #include <QUuid>
 #include <QVariantMap>
 #include "book_dto.hpp"
+#include "adapters_export.hpp"
 #include "library_proxy_model.hpp"
 
 namespace adapters
@@ -18,7 +19,7 @@ namespace adapters
  * layer of abstraction which maps the user data to a format usable for the
  * application.
  */
-class IBookController : public QObject
+class ADAPTERS_EXPORT IBookController : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(adapters::data_models::LibraryProxyModel* libraryModel READ
@@ -50,6 +51,7 @@ public:
     Q_INVOKABLE virtual void syncWithServer() = 0;
     Q_INVOKABLE virtual int addBook(const QString& path) = 0;
     Q_INVOKABLE virtual int deleteBook(const QString& uuid) = 0;
+    Q_INVOKABLE virtual int deleteAllBooks() = 0;
     Q_INVOKABLE virtual int uninstallBook(const QString& uuid) = 0;
     Q_INVOKABLE virtual int downloadBookMedia(const QString& uuid) = 0;
     Q_INVOKABLE virtual int updateBook(const QString& uuid,

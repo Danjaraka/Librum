@@ -1,6 +1,7 @@
 #include "document_item.hpp"
 #include <QFile>
 #include <QUrl>
+#include <QtWidgets/QApplication>
 #include <memory>
 #include "document.hpp"
 
@@ -19,7 +20,7 @@ void DocumentItem::setFilePath(const QString& newFilePath)
         return;
     }
 
-    m_document = std::make_unique<Document>(QUrl(newFilePath).path());
+    m_document = std::make_unique<Document>(newFilePath);
 
     emit filePathChanged(newFilePath);
     emit pageCountChanged(m_document->getPageCount());
@@ -66,8 +67,12 @@ void DocumentItem::setZoom(float newZoom)
 
 void DocumentItem::search(const QString& text)
 {
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+
     clearSearch();
     m_document->search(text);
+
+    QApplication::restoreOverrideCursor();
 
     if(!m_document->getSearchHits().empty())
     {

@@ -19,6 +19,7 @@ public:
     void deleteUser() override;
     void syncWithServer() override;
     void changePassword(const QString& newPassword) override;
+    void forgotPassword(const QString& email) override;
 
     QString getTagUuidForName(QString name) override;
     QString addTag(const QString& name) override;
@@ -34,8 +35,8 @@ public:
     QString getEmail() const override;
     void setEmail(const QString& newEmail) override;
 
-    long getUsedBookStorage() const override;
-    long getBookStorageLimit() const override;
+    qint64 getUsedBookStorage() const override;
+    qint64 getBookStorageLimit() const override;
 
     QString getProfilePicturePath() const override;
     void setProfilePicture(const QString& path) override;

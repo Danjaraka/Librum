@@ -1,6 +1,9 @@
 #pragma once
 #include "../libs/di/include/boost/di.hpp"
 #include "app_info_access.hpp"
+#include "app_info_controller.hpp"
+#include "app_info_gateway.hpp"
+#include "app_info_service.hpp"
 #include "authentication_access.hpp"
 #include "authentication_controller.hpp"
 #include "authentication_gateway.hpp"
@@ -13,6 +16,7 @@
 #include "book_storage_manager.hpp"
 #include "downloaded_books_tracker.hpp"
 #include "i_app_info_access.hpp"
+#include "i_app_info_service.hpp"
 #include "i_book_metadata_helper.hpp"
 #include "settings_controller.hpp"
 #include "settings_service.hpp"
@@ -45,6 +49,9 @@ const auto diConfig = []
             .to<persistence::AuthenticationAccess>(),
 
         // App Info
+        di::bind<IAppInfoController>().to<controllers::AppInfoController>(),
+        di::bind<IAppInfoService>().to<services::AppInfoService>(),
+        di::bind<IAppInfoGateway>().to<gateways::AppInfoGateway>(),
         di::bind<IAppInfoAccess>().to<persistence::AppInfoAccess>(),
 
         // Books

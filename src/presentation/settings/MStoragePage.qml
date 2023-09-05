@@ -184,7 +184,7 @@ MFlickWrapper
                                         fontWeight: Font.Medium
                                         textColor: Style.colorText
                                         
-                                        onClicked: Qt.openUrlExternally(AppInformation.companyWebsite + "/whyTiers")
+                                        onClicked: Qt.openUrlExternally(AppInfoController.website + "/whyTiers")
                                     }
                                 }
                             }
@@ -381,14 +381,14 @@ MFlickWrapper
         visible: false
         title: "Upgrade Your Tier"
         message: "We don't offer upgrading options at the moment.\n" +
-                  "If you require additional storage, please contact us at: " + AppInformation.companyEmail
+                  "If you require additional storage, please contact us at: " + AppInfoController.companyEmail
         leftButtonText: "Close"
         rightButtonText: "Email Us"
         buttonsWidth: 180
         messageBottomSpacing: 10
         
         onOpenedChanged: if(opened) upgradePopup.giveFocus()
-        onRightButtonClicked: Qt.openUrlExternally("mailto:" + AppInformation.companyEmail)
+        onRightButtonClicked: Qt.openUrlExternally("mailto:" + AppInfoController.companyEmail)
         onDecisionMade: close()
     }
     

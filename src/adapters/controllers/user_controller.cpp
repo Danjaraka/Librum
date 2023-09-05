@@ -64,6 +64,11 @@ void UserController::changePassword(const QString& newPassword)
     m_userService->changePassword(newPassword);
 }
 
+void UserController::forgotPassword(const QString& email)
+{
+    m_userService->forgotPassword(email);
+}
+
 QString UserController::getTagUuidForName(QString name)
 {
     // Tags are always capitalized, make sure to search for the correct one
@@ -140,12 +145,12 @@ void UserController::setEmail(const QString& newEmail)
     emit emailChanged();
 }
 
-long UserController::getUsedBookStorage() const
+qint64 UserController::getUsedBookStorage() const
 {
     return m_userService->getUsedBookStorage();
 }
 
-long UserController::getBookStorageLimit() const
+qint64 UserController::getBookStorageLimit() const
 {
     return m_userService->getBookStorageLimit();
 }
