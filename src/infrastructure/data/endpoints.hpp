@@ -15,6 +15,7 @@ inline const QString checkIfEmailConfirmedEndpoint {
     domain + "/authentication/checkIfEmailConfirmed"
 };
 
+
 // App Info
 inline const QString latestAppVersionEndpoint { domain +
                                                 "/appinfo/latest-version" };
@@ -22,9 +23,6 @@ inline const QString binaryDownloadEndpoint {
     "https://librumstorageaccount.blob.core.windows.net/releases"
 };
 
-// App Info
-inline const QString latestAppVersionEndpoint { domain +
-                                                "/api/appinfo/latest-version" };
 
 // Book storage
 inline const QString bookCreationEndpoint { domain + "/book" };
