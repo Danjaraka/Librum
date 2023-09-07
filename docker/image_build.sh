@@ -1,0 +1,1 @@
+docker build -t librum-builder -f docker/Dockerfile .
